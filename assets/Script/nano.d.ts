@@ -1,5 +1,7 @@
 declare interface EventEmitter {
-    on(route: string, cb: (data) => void): void;
+    on(route: string, cb: (data) => void): EventEmitter;
+    off(route: string, cb?: (data) => void): EventEmitter;
+    once(route: string, cb: (data) => void): EventEmitter;
 }
 
 declare interface NanoClientParams {
@@ -9,13 +11,20 @@ declare interface NanoClientParams {
     path?: string;
     encode?: (reqId, route, msg) => any;
     decode?: (data) => any;
+    encrypt?: boolean;
+    maxReconnectAttempts?: number;
+    handshakeCallback?: (serializerName: string) => void;
+    user?: Object; //自定义其他握手信息
+    platform?: "";
+    clientBuildNumber?: "";
+    clientVersion?: "";
 }
 
 declare interface NanoClient extends EventEmitter {
     init(params: NanoClientParams, cb: () => void): void;
-    request(route: string, msg: any, cb: (response: any) => void);
+    request(route: string, msg, cb: (response) => void);
     disconnect(): void;
-    notify(route: string, msg: any);
+    notify(route: string, msg);
 }
 
 declare var nano: NanoClient;
